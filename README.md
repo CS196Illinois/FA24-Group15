@@ -1,8 +1,8 @@
-# Group TEAM_NUMBER
+# Group 15
 Group Name: TEAM_NAME
 
-[MVP Link](https://docs.google.com/document/d/1xFI9DDdO5HZAcu36Y6NL-RTDry5E3WHkfy-ZEWuqbXM/edit?usp=sharing)
+[MVP Link](https://docs.google.com/document/d/1jbY5A6lGfs7QpX398au2kcSdVxjlSA7_/edit)
 
-Team Members: STUDENTS_NETIDS
+Team Members: dlyao2, nickpan2, spate758, kavyask2, ryans18, ethanmh5
 
-Project Manager: PM_NETID
+Project Manager: bcisto2
