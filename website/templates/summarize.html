@@ -1,0 +1,42 @@
+    {% extends "base.html" %} {% block title %}Summary{% endblock %}
+
+    {% block content %}
+
+    <form method="POST" action="/summarize_post">
+        <br />
+        <h3 align = "center">Summarize</h3>
+        <div class = "form-group">
+            <label for="inputText">Input</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="inputText" 
+                name="inputText" 
+                placeholder="Enter text"
+            />
+        </div>
+        <button type="submit" class="btn btn-primary">Summarize</button>
+    </form>
+    <br />
+
+<h3>Summary</h3>
+
+<div></div>
+    {% for sentence in summarized_text %}
+        <div>{{ sentence|safe }}</div>
+    {% endfor %}
+</div>
+<!--
+   <ul>
+            {% for sentence in summarized_text %}
+            <li>{{ sentence }}</li>
+            {% endfor %}
+        </ul> 
+->
+
+
+
+
+
+{% endblock %} 
+

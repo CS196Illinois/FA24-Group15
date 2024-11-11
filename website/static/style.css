@@ -1,0 +1,39 @@
+body {
+    background-color: #C9E4CA;
+    color: var(#f7ebec)
+   
+  
+}
+body {
+    font-family: 'Roboto', sans-serif; /* Replace with any font of your choice */
+    color: green; /* Default text color */
+}
+.btn-primary {
+    background-color: #4a5f56; /* your custom color */
+    border-color: hsl(186, 26%, 31%);
+    color: white;
+}
+
+.navbar {
+    background-color:#4a5f56 !important;
+    padding: 1rem;
+    font-family: 'Roboto', sans-serif;
+    color: orange;
+}
+.navbar .nav-link {
+    color: orange;
+}
+.navbar .nav-link:hover {
+    color: #ff5722;
+}
+form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 1rem;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+.container {
+    padding-top: 0;
+}
