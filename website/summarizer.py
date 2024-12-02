@@ -45,6 +45,76 @@ nltk.download('punkt')
 # print("Summary:")
 # for sentence in summary:
 #   print(sentence)
+
+
+# UPDATED CODE STARTS HERE
+
+nlp = spacy.load("en_core_web_sm")
+
+# sentence similarity score calculation through spaCy, not bag of words
+def sentence_similarity2(sentence1, sentence2):
+    doc1 = nlp(sentence1)
+    doc2 = nlp(sentence2)
+
+    similarity = doc1.similarity(doc2)
+
+    return similarity
+
+# creates a matrix of similarity scores; each sentence similarity to itself = 0
+# first sentence of a summary of text is located at index 0
+def createMatrix(text):
+  listOfSentences = sent_tokenize(text)
+  numberOfSentences = len(listOfSentences)
+  matrix = np.zeros((numberOfSentences, numberOfSentences))
+  for i in range(numberOfSentences):
+    for j in range(numberOfSentences):
+      if i != j:
+        matrix[i][j] = sentence_similarity2(listOfSentences[i], listOfSentences[j])
+  return matrix
+
+# generates sub-bullet point sentences and returns them as an array
+def subBulletPts(index, fullText, threshold = 0.75):
+  similarityMatrix = createMatrix(fullText) # to find the most similar sentence
+  listOfSentences = sent_tokenize(fullText) # for finding 2-3 sub bullet point sentences (use index)
+  arrayMainSent = similarityMatrix[index] # one row, displays similarity scores of all other sentences to main sentence
+  arrayToReturn = []
+  #print("Sub bullet points for sentence: " + listOfSentences[index])
+  for i in range(len(arrayMainSent)):
+    if arrayMainSent[i] > threshold:
+      #print(listOfSentences[i]) # prints sentences that (compared to main bullet pt) have a similarity score > 0.75
+      arrayToReturn.append(listOfSentences[i])
+  return arrayToReturn
+
+# optional index finder method
+def indexFinder(fullText, mainSent):
+  listOfSentences = sent_tokenize(fullText)
+  for i in range(len(listOfSentences)):
+    if listOfSentences[i] == mainSent:
+      return i
+
+# Ethan's code is here
+adjMatrix = createMatrix(text)
+
+def bestFit(listOfSentences, adjMatrix, varThreshold):
+    '''We need to experiment with varThreshold values, or add an iterative
+    method in some way.'''
+    numberOfSentences = len(listOfSentences)
+    avgTransform = [1 / (numberOfSentences - 1)] * numberOfSentences
+    avgMeasures = np.dot(adjMatrix, avgTransform)
+    toReturn = []
+    for i in range(numberOfSentences):
+      sumMeasure = 0
+    for j in range(numberOfSentences):
+        if (adjMatrix[i][j] - avgMeasures[i]) ** 2 > varThreshold:
+            adjMatrix[i][j] = 0
+            sumMeasure += adjMatrix[i][j]
+        toReturn.append(sumMeasure)
+    return toReturn
+
+#Right now, this returns a list of values whose indices correspond to sentences.
+#The sentences with the largest values are what we want.
+
+# code Daniel uses to generate sub-bullet points
 def generate_elaboration(bullet_point):
     elaboration = ""
     
@@ -57,11 +127,6 @@ def generate_elaboration(bullet_point):
         elaboration = "This topic is crucial in shaping future developments in its respective field."
     
     return elaboration
-
-# Updated code starts here
-
-
-
 
 def summarize(input):
     # sentences = preprocess_text(input)
