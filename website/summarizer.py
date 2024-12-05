@@ -108,8 +108,9 @@ def indexFinder(fullText, mainSent):
 # Ethan's code is here
 #adjMatrix = createMatrix(text)
 
+#Right now, this returns a list of values whose indices correspond to sentences.
+#The sentences with the largest values are what we want.
 def bestFit(text, varThreshold):
-
     '''We need to experiment with varThreshold values, or add an iterative
     method in some way.'''
     listOfSentences = sent_tokenize(text)
@@ -125,7 +126,7 @@ def bestFit(text, varThreshold):
             adjMatrix[i][j] = 0
             sumMeasure += adjMatrix[i][j]
         toReturn.append(sumMeasure)
-    return toReturn # retrieve largest 3 scores using max
+    return toReturn # retrieve largest 3 scores using max to generate 3 main bullet points
 
 # retrieve three largest scores and save their indices in a list
 def mainBulletPts(text):
@@ -141,10 +142,6 @@ def mainBulletPts(text):
   return listOfIndices
 
 
-
-
-#Right now, this returns a list of values whose indices correspond to sentences.
-#The sentences with the largest values are what we want.
 
 # code Daniel uses to generate sub-bullet points
 def generate_elaboration(bullet_point):
