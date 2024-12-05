@@ -75,16 +75,16 @@ def createMatrix(text):
   return matrix
 
 # generates sub-bullet point sentences and returns them as an array
-def subBulletPts(index, fullText, threshold = 0.75):
-  similarityMatrix = createMatrix(fullText) # to find the most similar sentence
-  listOfSentences = sent_tokenize(fullText) # for finding 2-3 sub bullet point sentences (use index)
-  arrayMainSent = similarityMatrix[index] # one row, displays similarity scores of all other sentences to main sentence
-  arrayToReturn = []
-  for i in range(len(arrayMainSent)):
-    if arrayMainSent[i] > threshold:
-      #print(listOfSentences[i]) # prints sentences that (compared to main bullet pt) have a similarity score > 0.75
-      arrayToReturn.append(listOfSentences[i])
-  return arrayToReturn
+#def subBulletPts(index, fullText, threshold = 0.75):
+#  similarityMatrix = createMatrix(fullText) # to find the most similar sentence
+#  listOfSentences = sent_tokenize(fullText) # for finding 2-3 sub bullet point sentences (use index)
+#  arrayMainSent = similarityMatrix[index] # one row, displays similarity scores of all other sentences to main sentence
+#  arrayToReturn = []
+#  for i in range(len(arrayMainSent)):
+#    if arrayMainSent[i] > threshold:
+#      #print(listOfSentences[i]) # prints sentences that (compared to main bullet pt) have a similarity score > 0.75
+#      arrayToReturn.append(listOfSentences[i])
+#  return arrayToReturn
 
 # optional index finder method
 def indexFinder(fullText, mainSent):
@@ -150,7 +150,6 @@ def subBulletPts(mbpIndex, text, threshold = 0.75):
       #print(listOfSentences[i]) # prints sentences that (compared to main bullet pt) have a similarity score > 0.75
       arrayToReturn.append(listOfSentences[i])
   return arrayToReturn
-
 
 
 # code Daniel uses to generate sub-bullet points
