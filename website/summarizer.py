@@ -80,7 +80,6 @@ def subBulletPts(index, fullText, threshold = 0.75):
   listOfSentences = sent_tokenize(fullText) # for finding 2-3 sub bullet point sentences (use index)
   arrayMainSent = similarityMatrix[index] # one row, displays similarity scores of all other sentences to main sentence
   arrayToReturn = []
-  #print("Sub bullet points for sentence: " + listOfSentences[index])
   for i in range(len(arrayMainSent)):
     if arrayMainSent[i] > threshold:
       #print(listOfSentences[i]) # prints sentences that (compared to main bullet pt) have a similarity score > 0.75
@@ -135,18 +134,28 @@ def bestFit(text):
        scoreList[index] = 0
     return toReturn # this is list of 3 main bullet points
 
-# retrieve three largest scores and save their indices in a list
-#def mainBulletPts(text):
-#  avgScoreList = bestFit(text)
-#  sentToAvgScore = {} # key = sentence index, value = score
-#  for i in range(len(avgScoreList)):
-#    sentToAvgScore[i] = avgScoreList[i]
-#  listOfValues = list(sentToAvgScore.values())
-#  listOfKeys = list(sentToAvgScore.keys())
-#  listOfIndices = [] # holds 3 main bullet point sentences' index
-#  for i in range(3):
-#     listOfIndices.add(listOfKeys[listOfValues.index(max(listOfValues))])
-#  return listOfIndices
+
+# generates sub-bullet point sentences and returns them as an array
+def subBulletPts(mbpIndex, text, threshold = 0.75):
+  bulletPoints = bestFit(text)
+  
+  similarityMatrix = createMatrix(text) # to find the most similar sentence
+  
+  listOfSentences = sent_tokenize(text) # for finding 2-3 sub bullet point sentences (use index)
+ 
+  index = listOfSentences.index(bulletPoints[mbpIndex])
+
+  for i in range(3):
+     listOfSentences.remove(bulletPoints[i])
+  
+
+  arrayMainSent = similarityMatrix[index] # one row, displays similarity scores of all other sentences to main sentence
+  arrayToReturn = []
+  for i in range(len(arrayMainSent)):
+    if arrayMainSent[i] > threshold and arrayMainSent[i] not in bulletPoints:
+      #print(listOfSentences[i]) # prints sentences that (compared to main bullet pt) have a similarity score > 0.75
+      arrayToReturn.append(listOfSentences[i])
+  return arrayToReturn
 
 
 
