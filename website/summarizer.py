@@ -141,12 +141,12 @@ def subBulletPts(mbpIndex, text, threshold = 0.75):
   similarityMatrix = createMatrix(text) # to find the most similar sentence
   listOfSentences = sent_tokenize(text) # for finding 2-3 sub bullet point sentences (use index)
   index = listOfSentences.index(bulletPoints[mbpIndex])
-  for i in range(3):
-     listOfSentences.remove(bulletPoints[i])
+  #for i in range(3):
+  #   listOfSentences.remove(bulletPoints[i])
   arrayMainSent = similarityMatrix[index] # one row, displays similarity scores of all other sentences to main sentence
   arrayToReturn = []
   for i in range(len(arrayMainSent)):
-    if arrayMainSent[i] > threshold:
+    if arrayMainSent[i] > threshold and listOfSentences[i] not in bulletPoints:
       #print(listOfSentences[i]) # prints sentences that (compared to main bullet pt) have a similarity score > 0.75
       arrayToReturn.append(listOfSentences[i])
   return arrayToReturn
