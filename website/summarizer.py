@@ -110,7 +110,8 @@ def indexFinder(fullText, mainSent):
 
 #Right now, this returns a list of values whose indices correspond to sentences.
 #The sentences with the largest values are what we want.
-def bestFit(text, varThreshold):
+
+def bestFit(text):
     '''We need to experiment with varThreshold values, or add an iterative
     method in some way.'''
     listOfSentences = sent_tokenize(text)
@@ -122,7 +123,7 @@ def bestFit(text, varThreshold):
     for i in range(numberOfSentences):
       sumMeasure = 0
     for j in range(numberOfSentences):
-        if (adjMatrix[i][j] - avgMeasures[i]) ** 2 > varThreshold:
+        if (adjMatrix[i][j] - avgMeasures[i]) ** 2 > .3:
             adjMatrix[i][j] = 0
             sumMeasure += adjMatrix[i][j]
         toReturn.append(sumMeasure)
