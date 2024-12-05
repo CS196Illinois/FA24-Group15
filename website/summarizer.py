@@ -119,28 +119,34 @@ def bestFit(text):
     numberOfSentences = len(listOfSentences)
     avgTransform = [1 / (numberOfSentences - 1)] * numberOfSentences
     avgMeasures = np.dot(adjMatrix, avgTransform)
-    toReturn = []
+    scoreList = []
     for i in range(numberOfSentences):
       sumMeasure = 0
-    for j in range(numberOfSentences):
-        if (adjMatrix[i][j] - avgMeasures[i]) ** 2 > .3:
-            adjMatrix[i][j] = 0
-            sumMeasure += adjMatrix[i][j]
-        toReturn.append(sumMeasure)
-    return toReturn # retrieve largest 3 scores using max to generate 3 main bullet points
+      for j in range(numberOfSentences):
+          if (adjMatrix[i][j] - avgMeasures[i]) ** 2 > 0.3:
+              adjMatrix[i][j] = 0
+          sumMeasure += adjMatrix[i][j]
+      scoreList.append(sumMeasure)
+    toReturn = [] # sentences
+    for i in range(3):
+       maxValue = max(scoreList)
+       index = scoreList.index(maxValue)
+       toReturn.append(listOfSentences[index])
+       scoreList[index] = 0
+    return toReturn # this is list of 3 main bullet points
 
 # retrieve three largest scores and save their indices in a list
-def mainBulletPts(text):
-  avgScoreList = bestFit(text)
-  sentToAvgScore = {} # key = sentence index, value = score
-  for i in range(len(avgScoreList)):
-    sentToAvgScore[i] = avgScoreList[i]
-  listOfValues = list(sentToAvgScore.values())
-  listOfKeys = list(sentToAvgScore.keys())
-  listOfIndices = [] # holds 3 main bullet point sentences' index
-  for i in range(3):
-     listOfIndices.add(listOfKeys[listOfValues.index(max(listOfValues))])
-  return listOfIndices
+#def mainBulletPts(text):
+#  avgScoreList = bestFit(text)
+#  sentToAvgScore = {} # key = sentence index, value = score
+#  for i in range(len(avgScoreList)):
+#    sentToAvgScore[i] = avgScoreList[i]
+#  listOfValues = list(sentToAvgScore.values())
+#  listOfKeys = list(sentToAvgScore.keys())
+#  listOfIndices = [] # holds 3 main bullet point sentences' index
+#  for i in range(3):
+#     listOfIndices.add(listOfKeys[listOfValues.index(max(listOfValues))])
+#  return listOfIndices
 
 
 
