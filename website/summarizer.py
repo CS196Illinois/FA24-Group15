@@ -1,9 +1,12 @@
 import nltk
 import networkx as nx
 import numpy as np
+import spacy
 from nltk.tokenize import sent_tokenize, word_tokenize
 from collections import defaultdict
-nltk.download('punkt')
+#nltk.download('punkt')
+nltk.download('punkt_tab')
+nlp = spacy.load("en_core_web_sm")
 
 def preprocess_text(text):
     sentences = sent_tokenize(text)
@@ -42,18 +45,45 @@ def textrank(sentences, top_n=3):
 # print("Summary:")
 # for sentence in summary:
 #   print(sentence)
-def generate_elaboration(bullet_point):
-    elaboration = ""
-    
-    # Example elaboration based on keywords (you can expand this with AI models like GPT)
-    if "technology" in bullet_point.lower():
-        elaboration = "This advancement is pushing boundaries in fields like AI, automation, and sustainability."
-    elif "environment" in bullet_point.lower():
-        elaboration = "Environmental awareness is critical in addressing issues like climate change and resource conservation."
-    else:
-        elaboration = "This topic is crucial in shaping future developments in its respective field."
-    
-    return elaboration
+
+def sentence_similarity2(sentence1, sentence2): # sentence similarity through spaCy, not bag of words
+    # Process the sentences
+    doc1 = nlp(sentence1)
+    doc2 = nlp(sentence2)
+
+    # Calculate similarity
+    similarity = doc1.similarity(doc2)
+
+    return similarity
+
+def createMatrix(text):
+  listOfSentences = sent_tokenize(text)
+  numberOfSentences = len(listOfSentences)
+  matrix = np.zeros((numberOfSentences, numberOfSentences))
+  for i in range(numberOfSentences):
+    for j in range(numberOfSentences):
+      if i != j:
+        matrix[i][j] = sentence_similarity2(listOfSentences[i], listOfSentences[j])
+  return matrix
+
+# function defined if provided an index, otherwise call indexFinder
+def subBulletPts(index, fullText, threshold = 0.75):
+  similarityMatrix = createMatrix(fullText) # to find the most similar sentence
+  listOfSentences = sent_tokenize(fullText) # for finding 2-3 sub bullet point sentences (use index)
+  arrayMainSent = similarityMatrix[index] # one row, displays similarity scores of all other sentences to main sentence
+  arrayToReturn = []
+  #print("Sub bullet points for sentence: " + listOfSentences[index])
+  for i in range(len(arrayMainSent)):
+    if arrayMainSent[i] > threshold:
+      #print(listOfSentences[i]) # prints sentences that (compared to main bullet pt) have a similarity score > 0.75
+      arrayToReturn.append(listOfSentences[i])
+  return arrayToReturn
+
+def indexFinder(fullText, mainSent):
+  listOfSentences = sent_tokenize(fullText)
+  for i in range(len(listOfSentences)):
+    if listOfSentences[i] == mainSent:
+      return i
 
 
 def summarize(input):
@@ -61,8 +91,9 @@ def summarize(input):
     summary = textrank(sentences, top_n=3)  
      # Creating the final bullet points with elaborations
     expanded_bullet_points = []
+    #index1 = indexFinder(input, )
     for point in summary:
-        elaboration = generate_elaboration(point)  # Add elaboration to the bullet point
+        elaboration = subBulletPts(0, input, .75) # Add elaboration to the bullet point
         # Create a nested bullet point structure with elaboration
         #expanded_bullet_points.append(f"• {point} \n    - {elaboration}")
         expanded_bullet_points.append(f"<ul><li>{point}<ul><li>{elaboration}</li></ul></li></ul>")
