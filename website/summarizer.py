@@ -4,13 +4,15 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from collections import defaultdict
 import nltk
 import spacy
+#import torch
+#from transformers import BartForConditionalGeneration, BartTokenizer
 nltk.download('punkt')
 
 #def preprocess_text(text):
 #    sentences = sent_tokenize(text)
 #    return sentences
 
-#def sentence_similarity(sent1, sent2): # not planning to use
+#def sentence_similarity2(sent1, sent2): # not planning to use; change back to just sentence_similarity
 #    words1 = word_tokenize(sent1.lower())
 #    words2 = word_tokenize(sent2.lower())
 
@@ -27,7 +29,7 @@ nltk.download('punkt')
 #    for i in range(len(sentences)):
 #        for j in range(len(sentences)):
 #            if i != j:
-#                similarity_matrix[i][j] = sentence_similarity(sentences[i], sentences[j])
+#                similarity_matrix[i][j] = sentence_similarity2(sentences[i], sentences[j])
 
 #    nx_graph = nx.from_numpy_array(similarity_matrix)
 #    scores = nx.pagerank(nx_graph)
@@ -92,12 +94,26 @@ def indexFinder(fullText, mainSent):
     if listOfSentences[i] == mainSent:
       return i
 
-# Ethan's code is here
-adjMatrix = createMatrix(text)
+# Paraphrase function using torch: COMMENT OUT IF CAN'T DOWNLOAD PACKAGES
+#def paraphrase(input_sentence):
+#  model = BartForConditionalGeneration.from_pretrained('eugenesiow/bart-paraphrase')
+#  device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#  model = model.to(device)
+#  tokenizer = BartTokenizer.from_pretrained('eugenesiow/bart-paraphrase')
+#  batch = tokenizer(input_sentence, return_tensors='pt')
+#  generated_ids = model.generate(batch['input_ids'])
+#  generated_sentence = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
+#  return generated_sentence
 
-def bestFit(listOfSentences, adjMatrix, varThreshold):
+# Ethan's code is here
+#adjMatrix = createMatrix(text)
+
+def bestFit(text, varThreshold):
+
     '''We need to experiment with varThreshold values, or add an iterative
     method in some way.'''
+    listOfSentences = sent_tokenize(text)
+    adjMatrix = createMatrix(text)
     numberOfSentences = len(listOfSentences)
     avgTransform = [1 / (numberOfSentences - 1)] * numberOfSentences
     avgMeasures = np.dot(adjMatrix, avgTransform)
@@ -109,7 +125,23 @@ def bestFit(listOfSentences, adjMatrix, varThreshold):
             adjMatrix[i][j] = 0
             sumMeasure += adjMatrix[i][j]
         toReturn.append(sumMeasure)
-    return toReturn
+    return toReturn # retrieve largest 3 scores using max
+
+# retrieve three largest scores and save their indices in a list
+def mainBulletPts(text):
+  avgScoreList = bestFit(text, 1) # assuming varThreshold = 1 (default)
+  sentToAvgScore = {} # key = sentence index, value = score
+  for i in range(len(avgScoreList)):
+    sentToAvgScore[i] = avgScoreList[i]
+  listOfValues = list(sentToAvgScore.values())
+  listOfKeys = list(sentToAvgScore.keys())
+  listOfIndices = [] # holds 3 main bullet point sentences' index
+  for i in range(3):
+     listOfIndices.add(listOfKeys[listOfValues.index(max(listOfValues))])
+  return listOfIndices
+
+
+
 
 #Right now, this returns a list of values whose indices correspond to sentences.
 #The sentences with the largest values are what we want.
@@ -129,15 +161,15 @@ def generate_elaboration(bullet_point):
     return elaboration
 
 def summarize(input):
-    # sentences = preprocess_text(input)
-    # summary = textrank(sentences, top_n=3)  
+    sentences = preprocess_text(input)
+    summary = textrank(sentences, top_n=3)  
      # Creating the final bullet points with elaborations
     expanded_bullet_points = []
-    #for point in summary:
-    #    elaboration = generate_elaboration(point)  # Add elaboration to the bullet point
+    for point in summary:
+      elaboration = generate_elaboration(point)  # Add elaboration to the bullet point
         # Create a nested bullet point structure with elaboration
         #expanded_bullet_points.append(f"• {point} \n    - {elaboration}")
-    #    expanded_bullet_points.append(f"<ul><li>{point}<ul><li>{elaboration}</li></ul></li></ul>")
+      expanded_bullet_points.append(f"<ul><li>{point}<ul><li>{elaboration}</li></ul></li></ul>")
     
     return expanded_bullet_points
 
