@@ -131,7 +131,7 @@ def bestFit(text):
 
 # retrieve three largest scores and save their indices in a list
 def mainBulletPts(text):
-  avgScoreList = bestFit(text, 1) # assuming varThreshold = 1 (default)
+  avgScoreList = bestFit(text)
   sentToAvgScore = {} # key = sentence index, value = score
   for i in range(len(avgScoreList)):
     sentToAvgScore[i] = avgScoreList[i]
