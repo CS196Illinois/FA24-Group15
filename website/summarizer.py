@@ -37,21 +37,6 @@ def createMatrix(text):
         matrix[i][j] = sentence_similarity2(listOfSentences[i], listOfSentences[j])
   return matrix
 
-# Paraphrase function using torch: COMMENT OUT IF CAN'T DOWNLOAD PACKAGES
-#def paraphrase(input_sentence):
-#  model = BartForConditionalGeneration.from_pretrained('eugenesiow/bart-paraphrase')
-#  device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#  model = model.to(device)
-#  tokenizer = BartTokenizer.from_pretrained('eugenesiow/bart-paraphrase')
-#  batch = tokenizer(input_sentence, return_tensors='pt')
-#  generated_ids = model.generate(batch['input_ids'])
-#  generated_sentence = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
-#  return generated_sentence
-
-# Ethan's code is here
-#adjMatrix = createMatrix(text)
-
-
 # optional index finder method
 def indexFinder(fullText, mainSent):
   listOfSentences = sent_tokenize(fullText)
@@ -76,12 +61,12 @@ def bestFit(text):
           sumMeasure += adjMatrix[i][j]
       scoreList.append(sumMeasure)
     toReturn = [] # sentences
-    for i in range(3):
+    for i in range(5):
        maxValue = max(scoreList)
        index = scoreList.index(maxValue)
        toReturn.append(listOfSentences[index])
        scoreList[index] = 0
-    return toReturn # this is list of 3 main bullet points
+    return toReturn # this is list of 5 main bullet points
 
 #code Daniel uses to generate sub-bullet points
 def generate_elaboration(bullet_point):
